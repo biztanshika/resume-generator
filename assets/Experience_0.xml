@@ -1,0 +1,269 @@
+<wp:anchor xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" xmlns:cx2="http://schemas.microsoft.com/office/drawing/2015/10/21/chartex" xmlns:cx3="http://schemas.microsoft.com/office/drawing/2016/5/9/chartex" xmlns:cx4="http://schemas.microsoft.com/office/drawing/2016/5/10/chartex" xmlns:cx5="http://schemas.microsoft.com/office/drawing/2016/5/11/chartex" xmlns:cx6="http://schemas.microsoft.com/office/drawing/2016/5/12/chartex" xmlns:cx7="http://schemas.microsoft.com/office/drawing/2016/5/13/chartex" xmlns:cx8="http://schemas.microsoft.com/office/drawing/2016/5/14/chartex" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:aink="http://schemas.microsoft.com/office/drawing/2016/ink" xmlns:am3d="http://schemas.microsoft.com/office/drawing/2017/model3d" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:oel="http://schemas.microsoft.com/office/2019/extlst" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w16cex="http://schemas.microsoft.com/office/word/2018/wordml/cex" xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" xmlns:w16="http://schemas.microsoft.com/office/word/2018/wordml" xmlns:w16du="http://schemas.microsoft.com/office/word/2023/wordml/word16du" xmlns:w16sdtdh="http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash" xmlns:w16sdtfl="http://schemas.microsoft.com/office/word/2024/wordml/sdtformatlock" xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251662336" behindDoc="0" locked="0" layoutInCell="1" hidden="0" allowOverlap="1" wp14:anchorId="0B254B24" wp14:editId="3A26BE98">
+  <wp:simplePos x="0" y="0"/>
+  <wp:positionH relativeFrom="column">
+    <wp:posOffset>-323850</wp:posOffset>
+  </wp:positionH>
+  <wp:positionV relativeFrom="paragraph">
+    <wp:posOffset>-41910</wp:posOffset>
+  </wp:positionV>
+  <wp:extent cx="247650" cy="266700"/>
+  <wp:effectExtent l="0" t="0" r="19050" b="0"/>
+  <wp:wrapNone/>
+  <wp:docPr id="1159400284" name="Group 1159400284"/>
+  <wp:cNvGraphicFramePr/>
+  <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+    <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup">
+      <wpg:wgp>
+        <wpg:cNvGrpSpPr/>
+        <wpg:grpSpPr>
+          <a:xfrm>
+            <a:off x="0" y="0"/>
+            <a:ext cx="247650" cy="266700"/>
+            <a:chOff x="5222175" y="3646650"/>
+            <a:chExt cx="247650" cy="266700"/>
+          </a:xfrm>
+        </wpg:grpSpPr>
+        <wpg:grpSp>
+          <wpg:cNvPr id="1558741564" name="Group 1558741564"/>
+          <wpg:cNvGrpSpPr/>
+          <wpg:grpSpPr>
+            <a:xfrm>
+              <a:off x="5222175" y="3646650"/>
+              <a:ext cx="247650" cy="266700"/>
+              <a:chOff x="5838750" y="3644425"/>
+              <a:chExt cx="285150" cy="271150"/>
+            </a:xfrm>
+          </wpg:grpSpPr>
+          <wps:wsp>
+            <wps:cNvPr id="1754392474" name="Rectangle 1754392474"/>
+            <wps:cNvSpPr/>
+            <wps:spPr>
+              <a:xfrm>
+                <a:off x="5838750" y="3644425"/>
+                <a:ext cx="285150" cy="271150"/>
+              </a:xfrm>
+              <a:prstGeom prst="rect">
+                <a:avLst/>
+              </a:prstGeom>
+              <a:noFill/>
+              <a:ln>
+                <a:noFill/>
+              </a:ln>
+            </wps:spPr>
+            <wps:txbx>
+              <w:txbxContent>
+                <w:p w14:paraId="5A4C7A1B" w14:textId="77777777" w:rsidR="005C216A" w:rsidRDefault="005C216A" w:rsidP="005C216A">
+                  <w:pPr>
+                    <w:spacing w:after="0"/>
+                    <w:textDirection w:val="btLr"/>
+                  </w:pPr>
+                </w:p>
+              </w:txbxContent>
+            </wps:txbx>
+            <wps:bodyPr spcFirstLastPara="1" wrap="square" lIns="91425" tIns="91425" rIns="91425" bIns="91425" anchor="ctr" anchorCtr="0">
+              <a:noAutofit/>
+            </wps:bodyPr>
+          </wps:wsp>
+          <wpg:grpSp>
+            <wpg:cNvPr id="1231841977" name="Group 1231841977"/>
+            <wpg:cNvGrpSpPr/>
+            <wpg:grpSpPr>
+              <a:xfrm>
+                <a:off x="5838760" y="3644428"/>
+                <a:ext cx="284480" cy="271147"/>
+                <a:chOff x="0" y="0"/>
+                <a:chExt cx="284480" cy="271147"/>
+              </a:xfrm>
+            </wpg:grpSpPr>
+            <wps:wsp>
+              <wps:cNvPr id="637948928" name="Rectangle 637948928"/>
+              <wps:cNvSpPr/>
+              <wps:spPr>
+                <a:xfrm>
+                  <a:off x="0" y="0"/>
+                  <a:ext cx="284475" cy="271125"/>
+                </a:xfrm>
+                <a:prstGeom prst="rect">
+                  <a:avLst/>
+                </a:prstGeom>
+                <a:noFill/>
+                <a:ln>
+                  <a:noFill/>
+                </a:ln>
+              </wps:spPr>
+              <wps:txbx>
+                <w:txbxContent>
+                  <w:p w14:paraId="56E2D044" w14:textId="77777777" w:rsidR="005C216A" w:rsidRDefault="005C216A" w:rsidP="005C216A">
+                    <w:pPr>
+                      <w:spacing w:after="0"/>
+                      <w:textDirection w:val="btLr"/>
+                    </w:pPr>
+                  </w:p>
+                </w:txbxContent>
+              </wps:txbx>
+              <wps:bodyPr spcFirstLastPara="1" wrap="square" lIns="91425" tIns="91425" rIns="91425" bIns="91425" anchor="ctr" anchorCtr="0">
+                <a:noAutofit/>
+              </wps:bodyPr>
+            </wps:wsp>
+            <wps:wsp>
+              <wps:cNvPr id="1933497773" name="Freeform: Shape 1933497773"/>
+              <wps:cNvSpPr/>
+              <wps:spPr>
+                <a:xfrm>
+                  <a:off x="0" y="2"/>
+                  <a:ext cx="284480" cy="271145"/>
+                </a:xfrm>
+                <a:custGeom>
+                  <a:avLst/>
+                  <a:gdLst/>
+                  <a:ahLst/>
+                  <a:cxnLst/>
+                  <a:rect l="l" t="t" r="r" b="b"/>
+                  <a:pathLst>
+                    <a:path w="284480" h="271145" extrusionOk="0">
+                      <a:moveTo>
+                        <a:pt x="146685" y="0"/>
+                      </a:moveTo>
+                      <a:lnTo>
+                        <a:pt x="139065" y="0"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="99695" y="78740"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="97790" y="82550"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="93980" y="85725"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="2540" y="99060"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="0" y="106045"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="66675" y="170815"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="67945" y="175260"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="53340" y="260350"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="52070" y="266065"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="58420" y="270510"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="140335" y="227965"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="226695" y="227965"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="217170" y="175260"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="219075" y="170815"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="285115" y="106045"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="282575" y="99060"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="191135" y="85725"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="187325" y="82550"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="185420" y="78740"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="149225" y="5080"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="146685" y="0"/>
+                      </a:lnTo>
+                    </a:path>
+                  </a:pathLst>
+                </a:custGeom>
+                <a:solidFill>
+                  <a:srgbClr val="735047"/>
+                </a:solidFill>
+                <a:ln>
+                  <a:noFill/>
+                </a:ln>
+              </wps:spPr>
+              <wps:bodyPr spcFirstLastPara="1" wrap="square" lIns="91425" tIns="91425" rIns="91425" bIns="91425" anchor="ctr" anchorCtr="0">
+                <a:noAutofit/>
+              </wps:bodyPr>
+            </wps:wsp>
+            <wps:wsp>
+              <wps:cNvPr id="326656003" name="Freeform: Shape 326656003"/>
+              <wps:cNvSpPr/>
+              <wps:spPr>
+                <a:xfrm>
+                  <a:off x="0" y="0"/>
+                  <a:ext cx="284480" cy="271145"/>
+                </a:xfrm>
+                <a:custGeom>
+                  <a:avLst/>
+                  <a:gdLst/>
+                  <a:ahLst/>
+                  <a:cxnLst/>
+                  <a:rect l="l" t="t" r="r" b="b"/>
+                  <a:pathLst>
+                    <a:path w="284480" h="271145" extrusionOk="0">
+                      <a:moveTo>
+                        <a:pt x="226695" y="227965"/>
+                      </a:moveTo>
+                      <a:lnTo>
+                        <a:pt x="144780" y="227965"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="226695" y="270510"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="233045" y="266065"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="231775" y="260350"/>
+                      </a:lnTo>
+                      <a:lnTo>
+                        <a:pt x="226695" y="227965"/>
+                      </a:lnTo>
+                    </a:path>
+                  </a:pathLst>
+                </a:custGeom>
+                <a:solidFill>
+                  <a:srgbClr val="735047"/>
+                </a:solidFill>
+                <a:ln>
+                  <a:noFill/>
+                </a:ln>
+              </wps:spPr>
+              <wps:bodyPr spcFirstLastPara="1" wrap="square" lIns="91425" tIns="91425" rIns="91425" bIns="91425" anchor="ctr" anchorCtr="0">
+                <a:noAutofit/>
+              </wps:bodyPr>
+            </wps:wsp>
+          </wpg:grpSp>
+        </wpg:grpSp>
+      </wpg:wgp>
+    </a:graphicData>
+  </a:graphic>
+  <wp14:sizeRelH relativeFrom="margin">
+    <wp14:pctWidth>0</wp14:pctWidth>
+  </wp14:sizeRelH>
+  <wp14:sizeRelV relativeFrom="margin">
+    <wp14:pctHeight>0</wp14:pctHeight>
+  </wp14:sizeRelV>
+</wp:anchor>
+
+
+

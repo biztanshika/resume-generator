@@ -1,9 +1,124 @@
 # Resume Generator
 
 
-An AI-powered resume formatting tool. Upload any resume, and the app extracts its
-content, uses GPT to rewrite and structure it, then outputs a professionally
-formatted Microsoft Word document (.docx) matching the company template.
+An AI-powered resume formatting and analysis tool. Upload any resume and the app
+extracts its content, uses GPT to rewrite and structure it, then outputs a
+professionally formatted Microsoft Word document (.docx) matching the company template.
+It also supports **bulk resume screening** — score and rank multiple candidates
+against a job description in one go, with CSV/Excel export.
+
+
+---
+
+
+## Local Setup
+
+
+### Prerequisites
+- Python 3.10 or later ([python.org](https://www.python.org/downloads/))
+- Git ([git-scm.com](https://git-scm.com/))
+- An OpenAI API key (`sk-...`) — entered directly in the app at runtime
+
+
+### 1. Get the code
+
+
+Clone the repository (or download and unzip it):
+
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd "Res Generator"
+```
+
+
+### 2. Create a virtual environment
+
+
+```bash
+python -m venv .venv
+```
+
+
+Activate it:
+
+
+| Platform | Shell | Command |
+|---|---|---|
+| Windows | PowerShell | `.\.venv\Scripts\Activate.ps1` |
+| Windows | CMD | `.\.venv\Scripts\activate.bat` |
+| macOS / Linux | bash/zsh | `source .venv/bin/activate` |
+
+
+> If PowerShell blocks the script, run this first:
+> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned`
+
+
+### 3. Install dependencies
+
+
+```bash
+pip install -r requirements.txt
+```
+
+
+This installs: `streamlit`, `openai`, `pdfplumber`, `python-docx`, `lxml`,
+`python-dotenv`, `openpyxl`.
+
+
+### 4. Run the app
+
+
+```bash
+# With venv activated:
+streamlit run app_v6.py
+
+
+# Or using the venv Python directly (Windows):
+.\.venv\Scripts\python.exe -m streamlit run app_v6.py
+```
+
+
+The app opens at **http://localhost:8501**.
+
+
+### 5. Enter your API key
+
+
+Paste your OpenAI `sk-...` key into the **"OpenAI / GPT API Key"** field at
+the top of the page. The key is used only for the current browser session and
+is never saved to disk.
+
+
+**Optional local fallback:** Create a `.env` file in the project root:
+```
+OPENAI_API_KEY=sk-your-key-here
+```
+The UI-entered key always takes priority over the `.env` value.  
+**Never commit `.env` to version control** — it is already listed in `.gitignore`.
+
+
+### 6. Verify the install (optional)
+
+
+```bash
+.\.venv\Scripts\python.exe -c "from app_v6 import _extract_job_context, _render_bulk_results; print('All imports OK')"
+```
+
+
+---
+
+
+## Streamlit Cloud Deployment
+
+
+1. Push the repo to GitHub (ensure `requirements.txt` is committed).
+2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+3. Click **Create app** → **Yup, I have an app**.
+4. Set: Repository → your repo, Branch → `main`, Main file path → `app_v6.py`.
+5. Click **Advanced settings** and set the Python version to match your local version (`python --version`).
+6. Leave the **Secrets** field empty — the app uses BYOK (users supply their own API key at runtime).
+7. Click **Deploy**. First build takes 2–5 minutes.
 
 
 ---
@@ -14,20 +129,20 @@ formatted Microsoft Word document (.docx) matching the company template.
 
 ```
 Res Generator/
+|-- app_v6.py                 Main Streamlit app (Phase 5 -- current version)
 |-- resume_generator.py       Phase 1 -- DOCX generation engine (DO NOT MODIFY)
-|-- app.py                    Phase 2 -- Streamlit web application
-|-- vba_code_example .txt     Reference VBA macro (source of truth for formatting)
-|-- sample_resume.docx        Test output generated from resume_generator.py
-|-- .env                      Your API key (NOT committed to version control)
+|-- requirements.txt          Python dependencies (used by pip and Streamlit Cloud)
+|-- requirements_phase2.txt   Legacy deps file (superseded by requirements.txt)
 |-- .env.example              Template showing required environment variables
-|-- requirements_phase2.txt   Python dependencies for Phase 2
+|-- .gitignore                Excludes .env, .venv, __pycache__, generated .docx files
+|-- vba_code_example .txt     Reference VBA macro (source of truth for formatting)
 |-- assets/                   Icon XML templates and EMF image used in DOCX output
 |   |-- Experience_0.xml      Briefcase icon anchor for Experience section
 |   |-- Projects_0.xml        Briefcase icon anchor for Projects section
 |   |-- Education_0.xml       Briefcase icon anchor for Education section
 |   |-- Skills_0.xml          Lightbulb icon anchor for Skills section
 |   |-- image1.emf            Icon image embedded in generated DOCX
-|-- .venv/                    Python virtual environment
+|-- .venv/                    Python virtual environment (not committed)
 ```
 
 
@@ -41,32 +156,35 @@ The project is split into two isolated phases:
 
 
 ```
-[User uploads resume]
+[User uploads resume(s) + optional job description]
         |
         v
-  app.py (Phase 2)
-        |-- extract_text()         strip text from .docx / .pdf / .txt
-        |-- call_openai()          send to gpt-4.5-preview, receive JSON
-        |-- generate_resume_bytes()
-                |
+  app_v6.py (Phase 5 -- current)
+        |-- _resolve_api_key()       UI key > .env fallback (BYOK)
+        |-- extract_text()           strip text from .docx / .pdf / .txt
+        |-- _extract_job_context()   extract JD text from typed input or uploaded file
+        |
+        |-- Single-resume path:
+        |       |-- call_openai()            rewrite resume --> JSON
+        |       |-- call_openai_rating()     score resume against JD
+        |       |-- generate_resume_bytes()  --> st.download_button
+        |
+        |-- Bulk-analysis path (multiple files):
+        |       |-- _analyse_one()           worker (runs in ThreadPoolExecutor)
+        |       |-- _render_bulk_results()   ranked expandable cards
+        |       |-- _build_csv_bytes()       CSV export
+        |       |-- _build_excel_bytes()     styled Excel export
+        |
+        v
+  resume_generator.py (Phase 1 -- frozen)
+        |-- create_resume(data)   build the DOCX from the JSON dict
                 v
-        resume_generator.py (Phase 1)
-                |-- create_resume(data)   build the DOCX from the JSON dict
-                        |-- add_header_line()
-                        |-- insert_name()
-                        |-- insert_summary_inline()
-                        |-- build_experience_section()
-                        |-- build_projects_section()
-                        |-- insert_section_header()  + icon injection
-                        |-- insert_education_entry()
-                        |-- insert_skills_list()
-                        v
-                [returns .docx bytes] --> st.download_button
+        [returns .docx bytes] --> st.download_button
 ```
 
 
 **Phase 1 (`resume_generator.py`) is a stable, frozen module.  
-Phase 2 (`app.py`) is the user-facing layer that drives it.**
+Phase 5 (`app_v6.py`) is the user-facing layer that drives it.**
 
 
 ---
@@ -163,20 +281,19 @@ The EMF image (`assets/image1.emf`) is embedded as a document relationship.
 ---
 
 
-## Phase 2 -- Streamlit Web Application
+## Phase 5 -- Streamlit Web Application
 
 
-**File:** `app.py`
+**File:** `app_v6.py`
 
 
 ### What it does
 1. Presents a WorkPace-themed web UI
-2. Accepts uploaded resumes (.docx, .pdf, .txt)
-3. Extracts raw text from the upload
-4. Sends text to `gpt-4.5-preview` with a structured system prompt
-5. Receives a JSON object matching the Phase 1 data schema
-6. Calls `create_resume()` from Phase 1 to generate the DOCX
-7. Serves the DOCX as a download
+2. Accepts a single or multiple uploaded resumes (.docx, .pdf, .txt)
+3. Accepts a job description typed in or uploaded as a file (.pdf, .docx, .txt)
+4. **Single-resume mode:** rewrites the resume via GPT and generates a formatted DOCX download
+5. **Bulk mode:** scores and ranks all uploaded resumes against the JD in parallel (up to 10 workers), with expandable result cards and CSV/Excel export
+6. API key entered by the user in the UI at runtime (BYOK) -- no credentials stored anywhere
 
 
 ### Key functions
@@ -184,12 +301,19 @@ The EMF image (`assets/image1.emf`) is embedded as a document relationship.
 
 | Function | Purpose |
 |---|---|
+| `_resolve_api_key()` | Returns UI-entered key, falls back to `.env` |
 | `extract_text(uploaded_file)` | Routes to correct extractor by MIME type |
 | `extract_text_docx(bytes)` | Extracts paragraphs from .docx via python-docx |
 | `extract_text_pdf(bytes)` | Extracts text pages from PDF via pdfplumber |
 | `extract_text_txt(bytes)` | Decodes plain text |
-| `call_openai(resume_text)` | Calls gpt-4.5-preview, validates + returns JSON dict |
-| `generate_resume_bytes(data)` | Wraps create_resume() to return bytes via temp file |
+| `_extract_job_context(uploaded_jd)` | Extracts JD text from an uploaded file |
+| `call_openai(resume_text, api_key)` | Calls gpt-4o-mini, validates + returns JSON dict |
+| `call_openai_rating(resume_text, job_context, api_key)` | Scores resume against JD, returns score + verdict |
+| `_analyse_one(filename, file_bytes, mime, job_context, api_key)` | Thread worker for one resume |
+| `_build_csv_bytes(results)` | UTF-8 CSV with Rank / File / Score / Verdict / Top items |
+| `_build_excel_bytes(results)` | Styled openpyxl workbook, returns `None` if not installed |
+| `_render_bulk_results(results)` | Ranked expandable cards with download buttons |
+| `generate_resume_bytes(data)` | Wraps `create_resume()` to return bytes via temp file |
 | `main()` | Streamlit page layout and UI logic |
 
 
@@ -227,87 +351,8 @@ WorkPace-inspired colour palette injected via a single `st.markdown` CSS block:
 ## Setup Instructions
 
 
-### Requirements
-- Python 3.10 or later
-- An OpenAI API key with access to `gpt-4.5-preview`
-- Microsoft Word (to open generated .docx files)
-
-
-### 1. Clone / copy the folder
-Place the entire `Res Generator` folder on the target machine. Keep all files
-intact -- do not move `assets/` or rename any files.
-
-
-### 2. Create a virtual environment
-
-
-```bash
-cd "Res Generator"
-python -m venv .venv
-```
-
-
-Activate it:
-- Windows: `.\.venv\Scripts\Activate.ps1` (PowerShell) or `.\.venv\Scripts\activate.bat` (CMD)
-- macOS/Linux: `source .venv/bin/activate`
-
-
-### 3. Install dependencies
-
-
-```bash
-pip install -r requirements_phase2.txt
-```
-
-
-This installs: `streamlit`, `openai`, `pdfplumber`, `python-docx`, `lxml`, `python-dotenv`.
-
-
-### 4. Set your API key
-
-
-Copy `.env.example` to `.env`:
-
-
-```bash
-copy .env.example .env       # Windows
-cp .env.example .env         # macOS/Linux
-```
-
-
-Open `.env` and replace the placeholder:
-
-
-```
-OPENAI_API_KEY=sk-your-actual-key-here
-```
-
-
-**Never commit `.env` to version control.**
-
-
-### 5. Run the app
-
-
-```bash
-.\.venv\Scripts\python.exe -m streamlit run app.py   # Windows venv
-# or, if venv is already activated:
-streamlit run app.py
-```
-
-
-The app opens at `http://localhost:8501`.
-
-
-### 6. Verify it works (optional smoke test)
-
-
-From the activated venv:
-
-
-```bash
-python -c "from app import extract_text_txt, call_openai, generate_resume_bytes; print('Imports OK')"
-```
+See the **[Local Setup](#local-setup)** section at the top of this file for the
+full step-by-step instructions.
 
 
 ---
@@ -338,18 +383,18 @@ Output: `sample_resume.docx` in the same folder.
 ### The Phase Boundary Rule
 `resume_generator.py` is **frozen** (Phase 1). It is the single source of truth
 for all DOCX formatting. Changes to the visual output of the resume must only
-ever be made here, and those changes are automatically picked up by `app.py`
+ever be made here, and those changes are automatically picked up by `app_v6.py`
 because it imports `create_resume` at runtime.
 
 
-Do not copy formatting logic into `app.py`. Do not duplicate functions across files.
+Do not copy formatting logic into `app_v6.py`. Do not duplicate functions across files.
 
 
 ### Adding a new section to the resume
 1. Add a new helper function in `resume_generator.py` (e.g. `insert_awards_list`)
 2. Call it from `create_resume()` in the appropriate position
-3. Add the new key to the data dict schema and the AI system prompt in `app.py`
-4. Update the `REQUIRED_KEYS` set in `app.py` if the new key is mandatory
+3. Add the new key to the data dict schema and the AI system prompt in `app_v6.py`
+4. Update the `REQUIRED_KEYS` set in `app_v6.py` if the new key is mandatory
 5. Test by running `resume_generator.py` directly with sample data first
 
 
@@ -361,7 +406,7 @@ Do not copy formatting logic into `app.py`. Do not duplicate functions across fi
 
 
 ### Changing the AI model
-Only one line needs to change in `app.py`:
+Only one line needs to change in `app_v6.py`:
 
 
 ```python
@@ -386,7 +431,7 @@ LINE_WEIGHT_PT = 2
 
 
 ### Adding a new input format
-Add an extractor function in `app.py` and register it in the `EXTRACTORS` dict:
+Add an extractor function in `app_v6.py` and register it in the `EXTRACTORS` dict:
 
 
 ```python
@@ -402,15 +447,15 @@ Also add the extension to `st.file_uploader(..., type=["docx", "pdf", "txt", "rt
 
 
 ### Streamlit theme changes
-All CSS lives in the `WORKPACE_CSS` string constant at the top of `app.py`.
+All CSS lives in the `WORKPACE_CSS` string constant at the top of `app_v6.py`.
 It is injected once via `st.markdown(WORKPACE_CSS, unsafe_allow_html=True)`.
 Edit it there -- no separate CSS file is needed.
 
 
 ### What NOT to do
-- Do not hardcode candidate data anywhere in `app.py`
+- Do not hardcode candidate data anywhere in `app_v6.py`
 - Do not modify `assets/*.xml` files manually -- they contain precise EMU coordinates
-- Do not add new Python files for single-use utilities; keep logic in the two main files
+- Do not add new Python files for single-use utilities; keep logic in `app_v6.py` and `resume_generator.py`
 - Do not create temporary scripts and leave them in the folder
 
 
@@ -422,12 +467,14 @@ Edit it there -- no separate CSS file is needed.
 
 | Problem | Likely cause | Fix |
 |---|---|---|
-| `ModuleNotFoundError: No module named streamlit` | Running system Python instead of venv | Use `.\.venv\Scripts\python.exe -m streamlit run app.py` |
-| `OPENAI_API_KEY is not set` | `.env` file missing or key is placeholder | Create `.env` from `.env.example`, add real key |
+| `ModuleNotFoundError: No module named streamlit` | Running system Python instead of venv | Use `.\\.venv\Scripts\python.exe -m streamlit run app_v6.py` |
+| `Please enter your OpenAI API key` | No key entered in the UI and no `.env` fallback | Paste your `sk-...` key into the API key field at the top of the app |
 | `AI response missing required keys` | Model returned incomplete JSON | Retry; if persistent, check the model name in `MODEL` constant |
 | Generated DOCX has no icons | `assets/` folder missing or moved | Ensure `assets/` is in the same directory as `resume_generator.py` |
 | PDF extraction returns empty text | Scanned/image-based PDF | Text extraction only works on machine-readable PDFs; use .txt or .docx instead |
 | Port 8501 already in use | Another Streamlit instance running | Add `--server.port 8502` to the run command |
+| Bulk analysis button is greyed out | Only one file uploaded | Upload two or more resumes to enable bulk mode |
+| Excel export button missing | `openpyxl` not installed | Run `pip install openpyxl` in the venv |
 
 
 ---
@@ -438,7 +485,29 @@ Edit it there -- no separate CSS file is needed.
 
 | Variable | Required | Description |
 |---|---|---|
-| `OPENAI_API_KEY` | Yes | OpenAI secret key, starting with `sk-` |
+| `OPENAI_API_KEY` | No (optional fallback) | OpenAI secret key, starting with `sk-`. Only needed for local dev if you prefer not to enter the key in the UI each time. The UI-entered key always takes precedence. |
+
+
+---
+
+
+## Hosting (Streamlit Cloud)
+
+
+The app is designed for **Bring Your Own Key (BYOK)** deployment:
+
+
+1. Push the repo to GitHub (ensure `.env` is in `.gitignore`).
+2. Deploy on [Streamlit Community Cloud](https://streamlit.io/cloud).
+3. Each visitor pastes their own OpenAI key -- no shared secret is needed.
+
+
+**Risk model:** BYOK avoids shared-credit abuse because the app never stores
+or funds API calls itself. However, Streamlit Cloud is server-side Python, so
+resume text and the user's API key are processed on the hosted server during
+the request. For a portfolio / MVP demo this is acceptable. For a production
+app handling sensitive data, move to a backend with authentication, rate
+limiting, and managed secrets.
 
 
 ---
@@ -455,6 +524,3 @@ Edit it there -- no separate CSS file is needed.
 | `python-dotenv` | no | `.env` file loading |
 | `python-docx` | no | DOCX reading (extraction) and writing (generation) |
 | `lxml` | no | Low-level XML manipulation for DrawingML shapes |
-
-
-

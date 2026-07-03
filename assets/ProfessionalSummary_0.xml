@@ -1,0 +1,46 @@
+<wp:anchor xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251665408" behindDoc="0" locked="0" layoutInCell="1" hidden="0" allowOverlap="1">
+  <wp:simplePos x="0" y="0"/>
+  <wp:positionH relativeFrom="column">
+    <wp:posOffset>-323850</wp:posOffset>
+  </wp:positionH>
+  <wp:positionV relativeFrom="paragraph">
+    <wp:posOffset>-54864</wp:posOffset>
+  </wp:positionV>
+  <wp:extent cx="323850" cy="457200"/>
+  <wp:effectExtent l="0" t="0" r="0" b="0"/>
+  <wp:wrapNone/>
+  <wp:docPr id="900000001" name="ProfessionalSummaryIcon"/>
+  <wp:cNvGraphicFramePr>
+    <a:graphicFrameLocks noChangeAspect="1"/>
+  </wp:cNvGraphicFramePr>
+  <a:graphic>
+    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+      <pic:pic>
+        <pic:nvPicPr>
+          <pic:cNvPr id="0" name="ProfessionalSummary"/>
+          <pic:cNvPicPr>
+            <a:picLocks noChangeAspect="1"/>
+          </pic:cNvPicPr>
+        </pic:nvPicPr>
+        <pic:blipFill>
+          <a:blip r:embed="rId1"/>
+          <a:stretch>
+            <a:fillRect/>
+          </a:stretch>
+        </pic:blipFill>
+        <pic:spPr>
+          <a:xfrm>
+            <a:off x="0" y="0"/>
+            <a:ext cx="323850" cy="457200"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+        </pic:spPr>
+      </pic:pic>
+    </a:graphicData>
+  </a:graphic>
+</wp:anchor>
+
+
+

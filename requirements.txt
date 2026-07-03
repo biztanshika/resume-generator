@@ -4,3 +4,4 @@ pdfplumber
 python-dotenv
 python-docx
 lxml
+openpyxl

@@ -1,18 +1,9 @@
 """
-Phase 7 -- Streamlit Resume Generator App (NEW FORMAT) + Role-Fit Analyzer.
-
-
-Identical UI to app_v6 (upload -> OpenAI extract -> DOCX -> role-fit analysis).
-The ONLY differences from app_v6 are:
-  1. DOCX generation is routed through resume_generator_v2.create_resume,
-     which renders the approved new-format design (blue header bar, navy
-     headings, Professional Summary section, prose-style summary bullets,
-     Responsibilities heading, horizontal rules, etc.).
-  2. SYSTEM_PROMPT is tuned for the new format: prose-style summary bullets
-     and explicit Professional Summary + Certifications extraction guidance.
-The JSON schema returned by the model is unchanged from app_v6, so the v1
-app (app_v6) and the v1 engine (resume_generator.py) keep working in parallel
-and are not touched.
+Phase 5 -- Streamlit Resume Generator App + Role-Fit Analyzer (Side-Panel Layout)
+Imports create_resume() from Phase 1 (resume_generator.py) without modification.
+DOCX generation is identical to Phase 2 (app.py). Phase 5 adds a side-panel canvas
+for the simplified 3-section role-fit analysis (Strengths / Weaknesses / Suggestions)
+that appears to the right of the upload form.
 """
 
 
@@ -30,8 +21,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 
-# NEW-FORMAT engine -- resume_generator_v2 is independent of the v1 module.
-from resume_generator_v2 import create_resume
+# Phase 1 import -- resume_generator.py is NOT modified
+from resume_generator import create_resume
 
 
 # ---------------------------------------------------------------------------
@@ -40,7 +31,7 @@ from resume_generator_v2 import create_resume
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
 
-MODEL = "gpt-4.1"
+MODEL = "gpt-4o-mini"
 MAX_PARALLEL_WORKERS = 10
 
 
@@ -278,36 +269,21 @@ SYSTEM_PROMPT = """\
 You are a Resume Content Extractor.
 
 
-You will receive raw resume text wrapped in <resume>...</resume> delimiters \
-(from a .docx, .pdf, or .txt upload). Your job is to parse and reorganise that \
-content into a structured JSON object that matches the schema below. Return \
-ONLY valid JSON -- no markdown, no explanation, no extra keys.
-
-
-### Your Single Most Important Rule
-
-
-Your job is FAITHFUL PRESERVATION of what the candidate wrote -- not helpful \
-improvement. Do NOT shorten, summarise, consolidate, merge, paraphrase down, \
-or make the resume "tighter." Equally: do NOT pad, invent, fabricate, or add \
-any detail the candidate did not write. The output should MIRROR the source's \
-verbosity: rich and detailed when the source is rich and detailed; brief when \
-the source is brief. Your task is reorganisation, not editing.
+You receive raw resume text (from a .docx, .pdf, or .txt upload). Your job is \
+to parse and organise it into a structured JSON object that matches the exact \
+schema below. Return ONLY valid JSON -- no markdown, no explanation, no extra keys.
 
 
 ### Core Rules (apply to every section)
 
 
-- Use ONLY information explicitly present in the resume between the <resume> \
-  tags. Never invent, infer, or add any detail not stated by the candidate.
-- Preserve content depth in proportion to the source. If a role has 8 bullets \
-  in the resume, output 8 bullets. If a bullet is 30 words, keep it near 30 \
-  words. If the resume is sparse, the output is sparse -- do NOT pad it.
-- Light rewording for active voice and strong verbs is allowed; structural \
-  shortening, merging two bullets into one, or compressing a 30-word bullet \
-  to 12 words is NOT allowed.
-- Specific numbers, percentages, dollar amounts, dates, tool names, and \
-  acronyms must be preserved EXACTLY as written.
+- Use ONLY information explicitly present in the uploaded resume. Never invent, \
+infer, or add any detail not stated by the candidate.
+- Preserve the original depth and richness of the resume. Do NOT compress, \
+summarise, or drop content. If the resume has 5 bullets for a role, output 5 bullets. \
+If a bullet is 15 words long, keep it at roughly that length.
+- Write in polished, professional resume style: active voice, strong verbs, \
+specific numbers and tools preserved exactly as written.
 
 
 ### Content Rules
@@ -316,140 +292,46 @@ the source is brief. Your task is reorganisation, not editing.
 1. **name** -- The candidate's full name.
 
 
-2. **summary** -- A list of 6-8 prose-style bullet strings forming a \
-"Professional Summary" paragraph set. Each bullet should be a flowing, \
-complete sentence. For each bullet:
-   - Write 1-2 complete sentences (typically 25-60 words) in active voice.
-   - Do NOT prefix with a bold label or colon. The first word should be a \
-     descriptive adjective, role noun, or verb (e.g. "Results-driven Data \
-     Engineer with...", "Proven track record of...", "Domain experience spans...", \
-     "Demonstrated leadership in...").
-   - Cover the candidate's experience breadth, tooling depth, domain expertise, \
-     leadership/collaboration, and signature achievements -- one theme per bullet.
-   - Derive ALL content from what is actually written in the resume; do not pad \
-     with generic phrases.
-   - If the source resume has a dedicated "Professional Summary" / "Profile" / \
-     "About" / "Career Summary" section, use it as the primary source and \
-     expand into 6-8 prose bullets. If no such section exists, synthesise the \
-     bullets from the candidate's roles, skills, and projects.
-   - If the resume genuinely lacks enough material for 6 bullets, produce \
-     however many you can fully back with source content. Never invent themes.
+2. **summary** -- A list of 6-8 bullet strings derived from the resume content. \
+Each bullet must start with a bold label followed by a colon:
+   - Always include a "Domain:" bullet listing the candidate's domain expertise areas \
+     (e.g. "Domain: Ed-Tech, FinTech, Marketing Analytics").
+   - Choose remaining labels dynamically based on what is prominent in the resume. \
+     Use labels such as: Summary, SQL, Excel, Tools, Data Competencies, BI Tools, \
+     Collaboration & Leadership, Problem-Solving, Infrastructure & Automation, \
+     Data Visualization, Data Engineering, Cloud, etc.
+   - Each bullet must be a single, specific, impact-focused sentence (10-20 words). \
+     Reflect actual skills, tools, and achievements from the resume -- do not pad \
+     or genericise.
 
 
 3. **experience** -- A list of objects, one per role:
    - "role": Job title ONLY -- strip company name, location, and dates.
    - "tech": Comma-separated list of technologies/tools used in that role, \
-     taken directly from the resume text for that role. Do not add any \
-     technology not specifically mentioned in that role.
-   - "bullets": Output EVERY duty and accomplishment bullet from the original \
-     resume for this role, in the same order. Do not drop, merge, or combine \
-     bullets. Reword each bullet using active voice and strong verbs, but \
-     keep its length and specificity faithful to the source. A 30-word source \
-     bullet stays roughly 30 words; a 10-word source bullet stays roughly 10 \
-     words. NEVER pad short bullets to make them look longer.
-
-
-     BAD (compression -- forbidden):
-       Source: "Designed and implemented a multi-tenant Azure Data Factory \
-       pipeline orchestrating 40+ daily incremental loads from Salesforce, \
-       NetSuite, and on-prem SQL Server into a Synapse star schema, cutting \
-       reporting latency from 6 hours to 22 minutes."
-       Output: "Built Azure ETL pipelines that improved reporting speed."
-
-
-     GOOD (faithful preservation -- required):
-       Source: "Designed and implemented a multi-tenant Azure Data Factory \
-       pipeline orchestrating 40+ daily incremental loads from Salesforce, \
-       NetSuite, and on-prem SQL Server into a Synapse star schema, cutting \
-       reporting latency from 6 hours to 22 minutes."
-       Output: "Designed a multi-tenant Azure Data Factory pipeline \
-       orchestrating 40+ daily incremental loads from Salesforce, NetSuite, \
-       and on-prem SQL Server into a Synapse star schema, reducing reporting \
-       latency from 6 hours to 22 minutes."
+     taken directly from the resume text for that role. Do not add any technology not specifically mentioned in that role \
+   - "bullets": Preserve ALL duty and accomplishment bullets from the original resume \
+     for this role. Do not drop or merge bullets. Reword the bullet points if required using active voice and strong verbs \
+     Keep each bullet at its original length and specificity (typically 10-20 words).
 
 
 4. **projects** -- A list of objects, one per project:
-   - "title": Project name ONLY -- strip technology tags, locations, dates, and \
-     any company or client names.
-   - "bullets": Preserve ALL detail bullets from the original resume for this \
-     project, faithfully (same rules as experience bullets above). Remove any \
-     company or client names from bullet text -- replace them with a neutral \
-     descriptor (e.g. "the client", "a financial services firm") only if \
-     removal would make the sentence grammatically incomplete; otherwise \
-     simply omit the name. Each bullet should capture technologies used, \
-     outcomes achieved, and responsibilities held, at the original level of \
-     detail.
+   - "title": Project name ONLY -- strip technology tags, locations, and dates.
+   - "bullets": Preserve ALL detail bullets from the original resume for this project. \
+     Do not drop or merge bullets. Each bullet should capture technologies used, \
+     outcomes achieved, and responsibilities held, at the original level of detail.
 
 
-5. **education** -- A list of objects, one per degree. If the resume lists \
-multiple degrees (e.g. a Bachelor's AND a Master's), you MUST include a \
-separate object for EACH degree. Never combine or drop degrees. Each object has:
+5. **education** -- A list of objects, one per degree. If the resume lists multiple \
+degrees (e.g. a Bachelor's AND a Master's), you MUST include a separate object for \
+EACH degree. Never combine or drop degrees. Each object has:
    - "degree": Degree name.
-   - "college": Institution name ONLY -- do not include graduation year or dates.
+   - "college": Institution name and graduation year (if present).
 
 
-6. **skills** -- A list of strings, each in the format \
-"Category: item1, item2, item3". Group by meaningful categories based on \
-resume content (e.g. Programming, Web Technologies, Databases, Tools, \
-Methodologies, Cloud, BI Tools, Collaboration & Leadership, Domain Expertise, \
-Problem-Solving, etc.). Include all skills mentioned in the resume.
-
-
-7. **certifications** -- A list of certification strings. Each entry should be \
-written in "Issuer: Certification Name" format when an issuer is identifiable \
-(e.g. "Microsoft: Azure Solutions Architect Expert (AZ-305)", "AWS Certified: \
-Solutions Architect - Associate"). If the resume has a dedicated \
-"Certifications" / "Licenses & Certifications" / "Professional Credentials" \
-section, extract EVERY entry verbatim (preserve issuer, name, and exam code). \
-If the resume mentions certifications inline within other sections, surface \
-them here too. Return an empty list [] only if the resume mentions no \
-certifications at all.
-
-
-### Worked Example (Experience entry)
-
-
-If the source <resume> contained this role:
-
-
-  Senior Data Engineer, Acme Corp -- 2019-2023
-  Tools: Python, Airflow, Snowflake, dbt, Looker
-   * Architected and rolled out a Snowflake + dbt warehouse serving 14 \
-     analytics teams; modelled 80+ business entities and cut nightly batch \
-     time from 4.5 hours to 38 minutes.
-   * Led migration of 120 legacy Informatica jobs to Airflow DAGs, \
-     consolidating three orchestration tools and saving ~$140K in annual \
-     licensing.
-   * Mentored four junior engineers, instituted weekly code reviews, and \
-     authored the team's testing playbook (pytest + Great Expectations).
-   * Partnered with finance to deliver a self-serve revenue dashboard \
-     adopted by 60+ users in the first quarter.
-
-
-The correct extracted entry would be:
-
-
-  {
-    "role": "Senior Data Engineer",
-    "tech": "Python, Airflow, Snowflake, dbt, Looker",
-    "bullets": [
-      "Architected and rolled out a Snowflake + dbt warehouse serving 14 \
-analytics teams, modelling 80+ business entities and cutting nightly batch \
-time from 4.5 hours to 38 minutes.",
-      "Led migration of 120 legacy Informatica jobs to Airflow DAGs, \
-consolidating three orchestration tools and saving roughly $140K in annual \
-licensing.",
-      "Mentored four junior engineers, instituted weekly code reviews, and \
-authored the team's testing playbook using pytest and Great Expectations.",
-      "Partnered with finance to deliver a self-serve revenue dashboard \
-adopted by 60+ users in the first quarter."
-    ]
-  }
-
-
-Notice: company name and dates stripped; tools preserved exactly; all four \
-bullets kept; numbers and tool names preserved verbatim; lengths roughly \
-match the source. Nothing added, nothing dropped.
+6. **skills** -- A list of strings, each in the format "Category: item1, item2, item3". \
+Group by meaningful categories based on resume content (e.g. Programming, \
+Web Technologies, Databases, Tools, Methodologies, Cloud, BI Tools, etc.). \
+Include all skills mentioned in the resume.
 
 
 ### JSON Schema
@@ -457,7 +339,7 @@ match the source. Nothing added, nothing dropped.
 
 {
   "name": "string",
-  "summary": ["prose-style sentence 1", "prose-style sentence 2", "..."],
+  "summary": ["Label: text", "..."],
   "experience": [
     {
       "role": "string",
@@ -482,20 +364,11 @@ match the source. Nothing added, nothing dropped.
     }
   ],
   "skills": ["Category: items", "..."],
-  "certifications": ["Issuer: Certification Name", "..."]
+  "certifications": ["string or empty list"]
 }
 
 
-### Final Reminder (read this before you start)
-
-
-Faithful preservation, not helpful improvement. If the source is detailed, \
-your output is detailed. If the source is sparse, your output is sparse. \
-Never drop bullets. Never merge bullets. Never compress a long bullet into \
-a short one. Never invent or pad a short bullet into a long one. Strip \
-company/client names from project titles and project bullets. Strip \
-graduation years from education. Return ONLY the JSON object -- no markdown \
-fences, no commentary.\
+Return ONLY the JSON object. No markdown fences, no commentary.\
 """
 
 
@@ -673,16 +546,11 @@ def call_openai(resume_text: str, api_key: str = "") -> dict:
     client = OpenAI(api_key=key)
 
 
-    # Wrap resume in explicit delimiters so the model never confuses content
-    # with instructions, and the boundary is unambiguous.
-    user_message = f"<resume>\n{resume_text}\n</resume>"
-
-
     response = client.chat.completions.create(
         model=MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_message},
+            {"role": "user", "content": resume_text},
         ],
         response_format={"type": "json_object"},
         temperature=0.3,
@@ -759,7 +627,7 @@ def call_openai_rating(resume_text: str, job_context: str, api_key: str = "") ->
 
 
 def generate_resume_bytes(data: dict) -> bytes:
-    """Call resume_generator_v2.create_resume() and return the .docx bytes."""
+    """Call Phase 1's create_resume() and return the .docx bytes."""
     with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as tmp:
         tmp_path = tmp.name
 
